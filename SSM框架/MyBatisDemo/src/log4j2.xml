@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <!--终端显示格式-->
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} [%c] [%-5level] %logger{36} - %msg%n"/>
+        </Console>
+
+        <!--写入文件的信息-->
+        <RollingFile name="RollingFile" fileName="logs/app.log" filePattern="logs/app-%d{MM-dd-yyyy}.log.gz">
+            <BurstFilter level="INFO" rate="16" maxBurst="100"/>
+            <PatternLayout>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%c] [%-5level] %logger{36} - %msg%n</pattern>
+            </PatternLayout>
+            <TimeBasedTriggeringPolicy />
+        </RollingFile>
+
+    </Appenders>
+    <Loggers>
+        <!-- 设置终端输出信息 -->
+        <Logger name="com.one2many.dao.ICountryDao" level="debug">
+            <AppenderRef ref="Console"/>
+        </Logger>
+        <!--显示文件的等级-->
+        <Root level="debug">
+            <!--需要信息的位置-->
+            <!--<AppenderRef ref="Console"/>-->
+            <!--写入到文件-->
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

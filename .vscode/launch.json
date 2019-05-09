@@ -1,0 +1,85 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ThreadCoopration",
+            "request": "launch",
+            "mainClass": "LockCondition.ThreadCoopration",
+            "projectName": "LearnJava_fc88039d"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - ExecutorDemo",
+            "request": "launch",
+            "mainClass": "ExecutorDemo",
+            "projectName": "LearnJava_fc88039d"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TaskThreadDemo",
+            "request": "launch",
+            "mainClass": "TaskThreadDemo",
+            "projectName": "LearnJava_fc88039d"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - Node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "Node",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - BinaryTree",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "BinaryTree",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestFile",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "TestFile",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestThrow",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "TestThrow",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - TestThrows",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "TestThrows",
+            "args": ""
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - finalTest",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "stopOnEntry": false,
+            "mainClass": "finalTest",
+            "args": ""
+        }
+    ]
+}

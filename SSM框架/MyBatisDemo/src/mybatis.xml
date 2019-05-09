@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--从属性文件读取数据库连接信息-->
+    <properties resource="JDBC_CONFIG.properties"/>
+
+    <settings>
+        <!--延迟加载设置，默认关闭-->
+        <setting name="lazyLoadingEnabled" value="true"/>
+        <!--侵入式延迟加载设置，当开启时，任何方法的调用都会加载该对象的所有属性。否则，每个属性会按需加载。默认false-->
+        <setting name="aggressiveLazyLoading" value="true"/>
+    </settings>
+
+    <!--定义mapper.xml的别名-->
+    <typeAliases>
+        <!--别名设置有两种，一种是typeAlias,可以具体到某个类，需要单独的别名-->
+        <!--另一种是package，则可以具体到某个包，不需要写多个typeAlias，系统自动将其简单类名当作别名-->
+        <!--<typeAlias type="com.ydzx.beans.Student" alias="Student"/>-->
+        <package name="com.ydzx.beans"/>
+    </typeAliases>
+
+    <!--配置运行环境-->
+    <environments default="mysqlEM">
+        <environment id="mysqlEM">
+            <!--连接类型-->
+            <transactionManager type="JDBC"/>
+            <!--连接池-->
+            <dataSource type="POOLED">
+                <!--数据库连接的四要素-->
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.user}"/>
+                <property name="password" value="${jdbc.password}"/>
+            </dataSource>
+        </environment>
+    </environments>
+
+    <!--注册映射文件-->
+    <mappers>
+        <mapper resource="com/ydzx/dao/mapper.xml"/>
+    </mappers>
+</configuration>

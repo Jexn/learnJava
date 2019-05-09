@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace必须是dao的接口类-->
+<mapper namespace="com.ydzx.dao.IStudentDao">
+    <!--id映射到dao类，对应其数据库具体的操作-->
+    <!--parameterType对应插入的数据类型,可以在mybatis.xml文件中使用别名,也可以省略-->
+    <insert id="insertStudent" parameterType="Student">
+            INSERT INTO students(t_name,t_age,score) VALUES (#{name},#{age},#{score})
+    </insert>
+
+    <!--插入数据获取数据库为其设置的id-->
+    <!--resultType为返回类型;-->
+    <!--keyProperty对应为Student的属性id;-->
+    <!--order为id生成在insert语句前后顺序关系,在MySQL中如果设置Before，则获取不到这个值；如果是oracle数据库，则需要是before；这与数据库特性有关-->
+    <insert id="insertStudentCacheId" parameterType="Student">
+        INSERT INTO students(t_name,t_age,score) VALUES (#{name},#{age},#{score})
+        <selectKey resultType="Integer" keyProperty="id" order="AFTER">
+            SELECT @@identity
+        </selectKey>
+    </insert>
+
+    <!--根据id删除-->
+    <delete id="deleteStudentById" parameterType="Student">
+        <!--#{}这里与insert不一样，这里可以放任何字符-->
+        DELETE FROM students WHERE t_id = #{id}
+    </delete>
+
+    <!--更新内容-->
+    <update id="updateStudent" parameterType="Student">
+        UPDATE students set t_name = #{name},t_age = #{age},score = #{score} WHERE t_id = #{id}
+    </update>
+
+    <!--查找全部数据-->
+    <!--resultType为指定的返回类型，不设置会报错-->
+    <!--注意如果数据库里查询的字段如果和类的属性名不一致，可能会导致反射失败-->
+    <!--比如在此例中，如果数据库的列名是t_id,t_name,t_age，那么查询到的数据将无法反射到Student类-->
+    <!--在此需要使用别名解决，可以将语句改成SELECT t_id,t_name name,t_age age,score FROM Students-->
+    <!--注意：增删改没有这个情况，不需要设置别名，只需要修改获取的参数名，因为它们没有获取数据进行映射-->
+    <!--另外#{name},#{age}此类的值对应的是类的属性名，不需要修改-->
+    <!--<select id="selectAllStudents" parameterType="Student" resultType="Student">-->
+    <!--SELECT id,name,age,score FROM students-->
+    <!--</select>-->
+
+    <!--b别名不一致还可以使用resultMap结果映射解决，再以t_id,t_name,t_age为假设-->
+    <resultMap id="studentMapper" type="Student">
+        <id column="t_id" property="id"/>
+        <result column="t_name" property="name"/>
+        <result column="t_age" property="age"/>
+    </resultMap>
+
+    <select id="selectAllStudents" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+    </select>
+
+    <select id="selectAllStudentsMap" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+    </select>
+
+    <select id="selectStudentById" parameterType="Student" resultType="Student">
+        SELECT t_id,t_name,t_age,score FROM students WHERE t_id = #{id}
+    </select>
+
+    <select id="selectStudentsByName" parameterType="Student" resultType="Student">
+        <!--    SELECT id,name,age,score FROM students WHERE name LIKE concat('%',#{name},'%') -->
+        SELECT t_id,t_name,t_age,score FROM students WHERE t_name LIKE '%' #{name} '%'
+    </select>
+
+    <!--多条件查询类型-->
+    <select id="selectStudentsByCondition" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students WHERE t_name like '%' #{nameCon} '%' AND t_age > #{ageCon} AND score > #{stu.score}
+    </select>
+
+    <!--#{}里面可以放的信息-->
+    <!--1）参数对象的属性，比如#{name}-->
+    <!--2）随意内容，此时只起占位符作用，比如#{xxx}-->
+    <!--3）参数为map时的key，比如#{stu.score}-->
+    <!--4）参数为map时，若key所对应的value为对象，则可将该对象的属性放入-->
+    <!--5）参数若为数组列表，比如method(string str1,string str2，则可以使用#{0},#{1}获取对应的值-->
+
+    <!--动态查询-->
+    <!--需要注意的是<if test = "name != null and name != ''">中的属性指向的是Student类的属性，而不是数据库的列名-->
+    <!--注意如果是没有选中任何条件，可以使用where 1 = 1方式获取全部标签，但这样会造成系统开销增大;此时则可以使用where标签改进，但同时需要把SQL语句上的where删除-->
+    <select id="dynamicSelectStudentByCondition" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+        <where>
+            <if test="name != null and name != ''">
+                t_name like '%' #{name} '%'
+            </if>
+            <if test="age > 0">
+                AND t_age > #{age}
+            </if>
+        </where>
+    </select>
+
+    <!--优先级查询-->
+    <!--优先级查询情况下，下面例子下，按照顺序，如果同时输入name,age，则只查询t_name LIKE name，age会自动忽略-->
+    <!--这有点像switch case，前面的when匹配了，自动跳出，后面的when就不匹配了，如果都没有则执行otherwise-->
+    <select id="dynamicSelectStudentByChoose" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+        <where>
+            <choose>
+              <when test="name != null and name !=''">
+                  AND t_name LIKE '%' #{name} '%'
+              </when>
+              <when test="age > 0">
+                  AND t_age > #{age}
+              </when>
+              <otherwise>
+                  AND 1=0
+              </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <!--forEach的范围查询-->
+    <select id="dynamicSelectStudentByForEach" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+        <if test="array.length > 0">
+          WHERE t_id IN
+          <foreach collection="array" item="myId" open="(" close=")" separator=",">
+              #{myId}
+          </foreach>
+        </if>
+    </select>
+
+    <!--dynamicSelectStudentByForEachList-->
+    <select id="dynamicSelectStudentByForEachList" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+        <if test="list.size > 0">
+            WHERE t_id IN
+            <foreach collection="list" item="myId" open="(" close=")" separator=",">
+                #{myId}
+            </foreach>
+        </if>
+    </select>
+
+    <!--list是自定义泛型-->
+    <select id="dynamicSelectStudentByForEachGeneric" parameterType="Student" resultMap="studentMapper">
+        SELECT t_id,t_name,t_age,score FROM students
+        <if test="list.size > 0">
+            WHERE t_id IN
+            <foreach collection="list" item="stu" open="(" close=")" separator=",">
+                #{stu.id}
+            </foreach>
+        </if>
+    </select>
+</mapper>

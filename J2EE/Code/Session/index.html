@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <style>
+        form{
+            width: 400px;
+            margin: 100px auto;
+        }
+        #content{
+            background: lightsteelblue;
+            display: grid;
+            grid-template-columns: 80px 200px;
+            grid-template-rows: auto;
+        }
+        div{
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <form action="sessionA" method="post">
+        <div id="content">
+            <div><span>用户名：</span></div>
+            <div><input type="text" name="userID"></div>
+            <div><span>密码：</span></div>
+            <div><input type="password" name="password"></div>
+            <div><input type="submit" value="登录"></div>
+        </div>
+    </form>
+</body>
+</html>
